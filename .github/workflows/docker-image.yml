@@ -47,8 +47,13 @@ jobs:
     #   run: scp .env root@${{ secrets.HOST_NAME }}:~/websample/node-env/
 
     - name: Deploy to Docker
+      env:
+          PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST_NAME: ${{secrets.HOST_NAME}}
+          USER_NAME: ${{secrets.HOST_USER_NAME}}
       run: | 
-        ssh root@${{ secrets.HOST_NAME }} '
+        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+        ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} '
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/github_action_test:latest
           docker rm -f github_action_test || true
           docker run -d -p 3003:3000 --name github_action_test ${{ secrets.DOCKER_HUB_USERNAME }}/github_action_test:latest
