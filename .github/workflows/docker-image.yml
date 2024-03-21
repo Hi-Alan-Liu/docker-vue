@@ -52,7 +52,9 @@ jobs:
     - name: Deploy to Docker
       run: |
         echo "${{ secrets.DEPLOY_SSH_KEY }}" > private_key && chmod 600 private_key
-        ssh -o StrictHostKeyChecking=no -i private_key ubuntu@54.199.96.160 '
-          ./web_api.sh
+        ssh -o StrictHostKeyChecking=no -i private_key ubuntu@${{ secrets.HOST_NAME }} '
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/github_action_test:latest
+          docker rm -f github_action_test || true
+          docker run -d -p 3003:3000 --name github_action_test ${{ secrets.DOCKER_HUB_USERNAME }}/github_action_test:latest
         '
       # Docker 指令中，不能使用 `~` 路徑，可以使用 $Home 作為替代
