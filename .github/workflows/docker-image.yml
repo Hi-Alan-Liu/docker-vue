@@ -30,5 +30,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_IP }} '
             sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_PROJECT }}:latest
             sudo docker stop ${{ secrets.DOCKER_HUB_PROJECT }}
-            sudo docker run -d  --rm --name funiqueplus-frontend-cms -p 2083:80 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_PROJECT }}:latest
+            sudo docker run -d  --rm --name ${{ secrets.DOCKER_HUB_PROJECT }} -p 80:80 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_PROJECT }}:latest
           '
