@@ -4,6 +4,10 @@ on:
   push:
     branches: ["main"]
 
+env:
+  DEPLOY_SSH_USER: Monday
+  DEPLOY_SSH_IP: 54.199.96.160
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -28,7 +32,7 @@ jobs:
       - name: Deploy to Docker
         run: |
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.DEPLOY_SSH_USER }}@${{ env.DEPLOY_SSH_IP }} '
+          ssh -o StrictHostKeyChecking=no -i private_key ${{ env.DEPLOY_SSH_USER }}@${{ env.DEPLOY_SSH_IP }} '
             sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_PROJECT }}:latest
             sudo docker stop ${{ secrets.DOCKER_HUB_PROJECT }}
             sudo docker run -d  --rm --name ${{ secrets.DOCKER_HUB_PROJECT }} -p 8080:80 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_PROJECT }}:latest
